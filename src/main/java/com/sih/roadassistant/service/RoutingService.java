@@ -4,6 +4,7 @@ import com.sih.roadassistant.dto.RouteRequest;
 import com.sih.roadassistant.util.GeometryUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import tools.jackson.databind.JsonNode;
@@ -22,7 +23,9 @@ public class RoutingService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -95,6 +98,12 @@ public class RoutingService {
             response.put("routes", scoredRoutes);
             return response;
 
+        } catch (org.springframework.web.client.HttpClientErrorException e) {
+            String responseBody = e.getResponseBodyAsString();
+            if (responseBody != null && responseBody.contains("NoRoute")) {
+                throw new RuntimeException("No driving route exists between these locations (e.g. across oceans or separate landmasses).");
+            }
+            throw new RuntimeException("Routing service returned error: " + e.getStatusText());
         } catch (Exception e) {
             throw new RuntimeException("Routing calculation failed: " + e.getMessage(), e);
         }

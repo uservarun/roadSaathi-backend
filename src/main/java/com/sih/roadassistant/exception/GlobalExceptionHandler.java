@@ -29,6 +29,17 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", ex.getMessage()));
     }
 
+    @ExceptionHandler({
+        org.springframework.security.authorization.AuthorizationDeniedException.class,
+        org.springframework.security.access.AccessDeniedException.class
+    })
+    public ResponseEntity<Map<String, String>> handleAccessDeniedException(Exception ex) {
+        log.warn("Access Denied: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(Map.of("error", "Access Denied: You do not have permission to access this resource."));
+    }
+
     /**
      * Fallback exception handler for any general Exception.
      */

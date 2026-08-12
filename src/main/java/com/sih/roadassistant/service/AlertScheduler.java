@@ -9,12 +9,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.sih.roadassistant.service.TripService;
 
 @Service
 public class AlertScheduler {
 
     @Autowired
     private AlertRepository alertRepository;
+
+    @Autowired
+    private TripService tripService;
 
     @Autowired
     private WeatherService weatherService;
@@ -32,9 +36,21 @@ public class AlertScheduler {
     @Scheduled(cron = "0 * * * * ?")
     public void autoReopenRailwayGates() {
         LocalDateTime fifteenMinutesAgo = LocalDateTime.now().minusMinutes(15);
-        int updatedCount = alertRepository.expireClosedGates(fifteenMinutesAgo);
-        if (updatedCount > 0) {
-            System.out.println("Auto-reopened " + updatedCount + " closed railway gates.");
+
+        // Find gates that need to be auto-reopened
+        List<Alert> expiredGates = alertRepository.findAll().stream()
+                .filter(a -> "RAILWAY_GATE".equalsIgnoreCase(a.getAlertType())
+                        && "CLOSED".equalsIgnoreCase(a.getStatus())
+                        && a.getUpdatedAt() != null
+                        && a.getUpdatedAt().isBefore(fifteenMinutesAgo))
+                .toList();
+
+        for (Alert gate : expiredGates) {
+            gate.setStatus("OPEN");
+            gate.setUpdatedAt(LocalDateTime.now());
+            alertRepository.save(gate);
+            tripService.clearGateCache(gate.getId()); // Evict from active telemetry map
+            System.out.println("Auto-reopened closed railway gate: " + gate.getId());
         }
     }
 

@@ -25,7 +25,7 @@ public class AuthController {
     public ResponseEntity<?> signup(@RequestBody AuthRequest request) {
         try {
             User user = authService.registerUser(request);
-            String token = jwtUtils.generateToken(user.getUsername(), user.getId());
+            String token = jwtUtils.generateToken(user.getUsername(), user.getId(), user.getRole());
             return new ResponseEntity<>(Map.of("user", user, "token", token), HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
@@ -36,7 +36,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
             User user = authService.loginUser(request);
-            String token = jwtUtils.generateToken(user.getUsername(), user.getId());
+            String token = jwtUtils.generateToken(user.getUsername(), user.getId(), user.getRole());
             return ResponseEntity.ok(Map.of("user", user, "token", token));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
@@ -52,6 +52,38 @@ public class AuthController {
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Invalid verification code."));
             }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    @PostMapping("/resend-code")
+    public ResponseEntity<?> resendCode(@RequestParam("email") String email) {
+        try {
+            authService.resendVerificationCode(email);
+            return ResponseEntity.ok(Map.of("message", "Verification code resent successfully."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
+        try {
+            authService.requestPasswordReset(email);
+            return ResponseEntity.ok(Map.of("message", "Password reset code sent. Please check your email."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(
+            @RequestParam("email") String email,
+            @RequestParam("code") String code,
+            @RequestParam("newPassword") String newPassword) {
+        try {
+            authService.resetPassword(email, code, newPassword);
+            return ResponseEntity.ok(Map.of("message", "Password has been reset successfully."));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

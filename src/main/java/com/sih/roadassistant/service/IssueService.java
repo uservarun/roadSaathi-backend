@@ -36,7 +36,9 @@ public class IssueService {
     @Autowired
     private ReportRepository reportRepository;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final Map<UUID, Instant> userReportCooldowns = new ConcurrentHashMap<>();
@@ -135,10 +137,14 @@ public class IssueService {
     }
 
     private void enforceUserCooldown(UUID userId) {
+        // Garbage collection: Remove any expired cooldowns to prevent memory leak
+        Instant threshold = Instant.now().minusSeconds(300); // 5 minutes ago
+        userReportCooldowns.entrySet().removeIf(entry -> entry.getValue().isBefore(threshold));
+
         Instant lastReport = userReportCooldowns.get(userId);
         if (lastReport != null) {
             long secondsPassed = Instant.now().getEpochSecond() - lastReport.getEpochSecond();
-            if (secondsPassed < 300) { // 5 minutes (300 seconds)
+            if (secondsPassed < 300) {
                 long secondsRemaining = 300 - secondsPassed;
                 throw new RuntimeException("Please wait " + secondsRemaining + " seconds before submitting another report.");
             }
@@ -203,5 +209,31 @@ public class IssueService {
                 System.err.println("Gemini AI pothole verification failed: " + e.getMessage());
             }
         });
+    }
+    public Map<String, Object> getAllIssues() {
+        List<Pothole> potholes = potholeRepository.findAll();
+        List<Alert> alerts = alertRepository.findAll();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("potholes", potholes);
+        result.put("alerts", alerts);
+        return result;
+    }
+    public Pothole updatePotholeStatus(UUID id, String status, String severity){
+        Pothole pothole = potholeRepository.findById(id).orElseThrow(()-> new RuntimeException("pothole not found"));
+        pothole.setAiStatus(status.toUpperCase());
+        if(severity != null && !severity.trim().isEmpty()){
+            pothole.setSeverity(severity.toUpperCase());
+        }
+        return  potholeRepository.save(pothole);
+    }
+    public Alert updateAlertStatus(UUID id, String status, Boolean isActive){
+        Alert alert = alertRepository.findById(id).orElseThrow(()-> new RuntimeException("alert not found"));
+        alert.setStatus(status.toUpperCase());
+        if(isActive!=null){
+            alert.setIsActive(isActive);
+        }
+        alert.setUpdatedAt(LocalDateTime.now());
+        return alertRepository.save(alert);
     }
 }

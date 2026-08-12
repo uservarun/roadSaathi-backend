@@ -43,4 +43,14 @@ public class User {
     @Column(name = "verification_code", length = 6)
     @JsonIgnore
     private String verificationCode;
+
+    @Column(name = "verification_code_expires_at")
+    private LocalDateTime verificationCodeExpiresAt;
+
+    @Column(name = "reset_code", length = 6)
+    @JsonIgnore
+    private String resetCode;
+
+    @Column(name = "reset_code_expires_at")
+    private LocalDateTime resetCodeExpiresAt;
 }

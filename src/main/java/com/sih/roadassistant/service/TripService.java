@@ -49,10 +49,12 @@ public class TripService {
                 System.out.println("ALERT: Railway Gate " + gateId + " auto-flagged as CLOSED via user telemetry.");
             }
         } else if (speed > 15.0) {
-            Set<UUID> stoppedUsers = stoppedUsersPerGate.get(gateId);
-            if (stoppedUsers != null) {
-                stoppedUsers.remove(userID);
-                if (stoppedUsers.isEmpty() && "CLOSED".equals(railwayGate.getStatus())) {
+        Set<UUID> stoppedUsers = stoppedUsersPerGate.get(gateId);
+        if (stoppedUsers != null) {
+            stoppedUsers.remove(userID);
+            if (stoppedUsers.isEmpty()) {
+                stoppedUsersPerGate.remove(gateId); // Evict key to prevent memory leak
+                if ("CLOSED".equals(railwayGate.getStatus())) {
                     railwayGate.setStatus("OPEN");
                     railwayGate.setUpdatedAt(LocalDateTime.now());
                     alertRepository.save(railwayGate);
@@ -60,5 +62,9 @@ public class TripService {
                 }
             }
         }
+    }
+    }
+    public void clearGateCache(UUID gateId) {
+        stoppedUsersPerGate.remove(gateId);
     }
 }
