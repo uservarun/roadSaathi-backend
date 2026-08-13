@@ -20,6 +20,7 @@ public class IssueController {
     @Autowired
     private IssueService issueService;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/report", consumes = "multipart/form-data")
     public ResponseEntity<Pothole> reportPothole(
             @RequestParam("userId") UUID userId,
@@ -45,6 +46,7 @@ public class IssueController {
         return new ResponseEntity<>(pothole, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/gate")
     public ResponseEntity<Alert> updateRailwayGate(
             @RequestParam("latitude") double latitude,
