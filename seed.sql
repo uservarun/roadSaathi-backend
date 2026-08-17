@@ -7,35 +7,93 @@ DELETE FROM alerts;
 DELETE FROM potholes;
 DELETE FROM roads;
 
--- 1. MATHURA LOCAL REGION SEED DATA (Mathura Junction to Vrindavan)
--- Alerts & Potholes situated along the local transit corridor
+-- =========================================================
+-- 1. MATHURA LOCAL REGION SEED DATA (DENSE PRESENTATION SET)
+-- =========================================================
+
+-- Level Crossing Railway Gates in Mathura
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES 
 (
-  'b28c8eae-1ce4-47c4-936d-4e0508505999',
+  'b28c8eae-1ce4-47c4-936d-4e0508505001',
   'RAILWAY_GATE',
-  'CLOSED', -- Set to CLOSED to trigger re-routing calculations
-  ST_GeomFromText('POINT(77.6830 27.5187)', 4326),
+  'CLOSED', -- Triggers re-routing calculations
+  ST_GeomFromText('POINT(77.6828 27.5187)', 4326),
   'Masani Bypass Railway Crossing Gate (Mathura)',
   TRUE,
   NOW(),
   NOW()
 ),
 (
-  'b28c8eae-1ce4-47c4-936d-4e0508505001',
-  'WATER_LOGGING',
+  'b28c8eae-1ce4-47c4-936d-4e0508505002',
+  'RAILWAY_GATE',
   'OPEN',
-  ST_GeomFromText('POINT(77.6740 27.4980)', 4326),
-  'Water logging under bypass bridge',
+  ST_GeomFromText('POINT(77.6812 27.5015)', 4326),
+  'Bhuteshwar Level Crossing Gate',
+  TRUE,
+  NOW(),
+  NOW()
+),
+(
+  'b28c8eae-1ce4-47c4-936d-4e0508505003',
+  'RAILWAY_GATE',
+  'CLOSED',
+  ST_GeomFromText('POINT(77.6974 27.4852)', 4326),
+  'Aurangabad Railway Crossing Gate',
   TRUE,
   NOW(),
   NOW()
 );
 
+-- Waterlogging & Accident Alerts in Mathura
+INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
+VALUES 
+(
+  'b28c8eae-1ce4-47c4-936d-4e0508505004',
+  'WATER_LOGGING',
+  'CLOSED', -- Severe flooding, path blocked
+  ST_GeomFromText('POINT(77.6740 27.4980)', 4326),
+  'Water Logging under NH-19 Bypass Bridge (Mathura)',
+  TRUE,
+  NOW(),
+  NOW()
+),
+(
+  'b28c8eae-1ce4-47c4-936d-4e0508505005',
+  'ACCIDENT',
+  'CLOSED',
+  ST_GeomFromText('POINT(77.6685 27.5255)', 4326),
+  'Multi-vehicle Collision near Krishna Nagar NH-19 exit',
+  TRUE,
+  NOW(),
+  NOW()
+),
+(
+  'b28c8eae-1ce4-47c4-936d-4e0508505006',
+  'WATER_LOGGING',
+  'OPEN',
+  ST_GeomFromText('POINT(77.6888 27.5095)', 4326),
+  'Minor flooding near Deeg Gate Crossing',
+  TRUE,
+  NOW(),
+  NOW()
+),
+(
+  'b28c8eae-1ce4-47c4-936d-4e0508505007',
+  'ACCIDENT',
+  'OPEN',
+  ST_GeomFromText('POINT(77.6980 27.4930)', 4326),
+  'Accident hazard near Mathura Junction Main Entrance',
+  TRUE,
+  NOW(),
+  NOW()
+);
+
+-- Potholes scattered across Mathura local roads
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES 
 (
-  'c38d8eae-2ce4-47c4-936d-4e0508505888',
+  'c38d8eae-2ce4-47c4-936d-4e0508505001',
   ST_GeomFromText('POINT(77.6650 27.5450)', 4326),
   'https://images.unsplash.com/photo-1515162305285-0293e4767cc2',
   'HIGH',
@@ -43,22 +101,87 @@ VALUES
   NOW()
 ),
 (
-  'd48e8eae-3ce4-47c4-936d-4e0508505777',
+  'c38d8eae-2ce4-47c4-936d-4e0508505002',
   ST_GeomFromText('POINT(77.6593 27.5650)', 4326),
   NULL,
   'MEDIUM',
   'VERIFIED',
   NOW()
+),
+(
+  'c38d8eae-2ce4-47c4-936d-4e0508505003',
+  ST_GeomFromText('POINT(77.6810 27.5110)', 4326),
+  'https://images.unsplash.com/photo-1515162305285-0293e4767cc2',
+  'HIGH',
+  'VERIFIED',
+  NOW()
+),
+(
+  'c38d8eae-2ce4-47c4-936d-4e0508505004',
+  ST_GeomFromText('POINT(77.6865 27.5020)', 4326),
+  NULL,
+  'LOW',
+  'VERIFIED',
+  NOW()
+),
+(
+  'c38d8eae-2ce4-47c4-936d-4e0508505005',
+  ST_GeomFromText('POINT(77.6924 27.4985)', 4326),
+  'https://images.unsplash.com/photo-1515162305285-0293e4767cc2',
+  'HIGH',
+  'VERIFIED',
+  NOW()
+),
+(
+  'c38d8eae-2ce4-47c4-936d-4e0508505006',
+  ST_GeomFromText('POINT(77.7020 27.4890)', 4326),
+  NULL,
+  'MEDIUM',
+  'VERIFIED',
+  NOW()
+),
+(
+  'c38d8eae-2ce4-47c4-936d-4e0508505007',
+  ST_GeomFromText('POINT(77.6745 27.5312)', 4326),
+  NULL,
+  'MEDIUM',
+  'VERIFIED',
+  NOW()
+),
+(
+  'c38d8eae-2ce4-47c4-936d-4e0508505008',
+  ST_GeomFromText('POINT(77.6698 27.5410)', 4326),
+  'https://images.unsplash.com/photo-1515162305285-0293e4767cc2',
+  'HIGH',
+  'VERIFIED',
+  NOW()
+),
+(
+  'c38d8eae-2ce4-47c4-936d-4e0508505009',
+  ST_GeomFromText('POINT(77.6890 27.5050)', 4326),
+  NULL,
+  'LOW',
+  'VERIFIED',
+  NOW()
+),
+(
+  'c38d8eae-2ce4-47c4-936d-4e0508505010',
+  ST_GeomFromText('POINT(77.7125 27.4720)', 4326),
+  NULL,
+  'HIGH',
+  'VERIFIED',
+  NOW()
 );
 
 
+-- =========================================================
 -- 2. BAREILLY TO MATHURA ROUTE SEED DATA
--- Hazards placed strategically along the State Highway 33 / NH 530B corridor between Bareilly and Mathura
+-- =========================================================
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES (
-  'b28c8eae-1ce4-47c4-936d-4e0508505002',
+  'b28c8eae-1ce4-47c4-936d-4e0508505032',
   'RAILWAY_GATE',
-  'CLOSED', -- Active closed gate blocking the main highway path near Kasganj
+  'CLOSED',
   ST_GeomFromText('POINT(78.6473 27.8105)', 4326),
   'Kasganj Level Crossing Gate (Closed for train crossing)',
   TRUE,
@@ -69,16 +192,16 @@ VALUES (
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES 
 (
-  'c38d8eae-2ce4-47c4-936d-4e0508505003',
-  ST_GeomFromText('POINT(79.1264 28.0514)', 4326), -- Budaun highway pothole
+  'c38d8eae-2ce4-47c4-936d-4e0508505033',
+  ST_GeomFromText('POINT(79.1264 28.0514)', 4326),
   'https://images.unsplash.com/photo-1515162305285-0293e4767cc2',
   'HIGH',
   'VERIFIED',
   NOW()
 ),
 (
-  'c38d8eae-2ce4-47c4-936d-4e0508505004',
-  ST_GeomFromText('POINT(78.0512 27.5968)', 4326), -- Hathras bypass pothole
+  'c38d8eae-2ce4-47c4-936d-4e0508505034',
+  ST_GeomFromText('POINT(78.0512 27.5968)', 4326),
   NULL,
   'MEDIUM',
   'VERIFIED',
@@ -86,14 +209,15 @@ VALUES
 );
 
 
+-- =========================================================
 -- 3. DELHI TO NOIDA ROUTE SEED DATA (DND Flyway corridor)
--- Hazards placed to test short commuter route deviations
+-- =========================================================
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES (
-  'b28c8eae-1ce4-47c4-936d-4e0508505005',
+  'b28c8eae-1ce4-47c4-936d-4e0508505035',
   'RAILWAY_GATE',
   'CLOSED',
-  ST_GeomFromText('POINT(77.2830 28.5835)', 4326), -- DND Flyway approach junction
+  ST_GeomFromText('POINT(77.2830 28.5835)', 4326),
   'DND Approach railway gate (Maintenance Closure)',
   TRUE,
   NOW(),
@@ -101,13 +225,14 @@ VALUES (
 );
 
 
--- 4. DELHI TO AGRA ROUTE SEED DATA (Yamuna Expressway highway corridor)
--- Test hazards along the high speed expressway
+-- =========================================================
+-- 4. DELHI TO AGRA ROUTE SEED DATA (Yamuna Expressway)
+-- =========================================================
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES 
 (
-  'c38d8eae-2ce4-47c4-936d-4e0508505006',
-  ST_GeomFromText('POINT(77.6500 27.8900)', 4326), -- Jewar toll approach segment
+  'c38d8eae-2ce4-47c4-936d-4e0508505036',
+  ST_GeomFromText('POINT(77.6500 27.8900)', 4326),
   'https://images.unsplash.com/photo-1515162305285-0293e4767cc2',
   'HIGH',
   'VERIFIED',
@@ -115,13 +240,15 @@ VALUES
 );
 
 
+-- =========================================================
 -- 5. MUMBAI TO PUNE EXPRESSWAY CORRIDOR
+-- =========================================================
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES (
-  'b28c8eae-1ce4-47c4-936d-4e0508505007',
+  'b28c8eae-1ce4-47c4-936d-4e0508505037',
   'RAILWAY_GATE',
   'CLOSED',
-  ST_GeomFromText('POINT(73.6800 18.7300)', 4326), -- Near Talegaon bypass
+  ST_GeomFromText('POINT(73.6800 18.7300)', 4326),
   'Talegaon Railway Crossing Gate (Closed for Express Train pass)',
   TRUE,
   NOW(),
@@ -130,8 +257,8 @@ VALUES (
 
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES (
-  'c38d8eae-2ce4-47c4-936d-4e0508505008',
-  ST_GeomFromText('POINT(73.4000 18.7500)', 4326), -- Pothole near Lonavala ghat section
+  'c38d8eae-2ce4-47c4-936d-4e0508505038',
+  ST_GeomFromText('POINT(73.4000 18.7500)', 4326),
   'https://images.unsplash.com/photo-1515162305285-0293e4767cc2',
   'HIGH',
   'VERIFIED',
@@ -139,13 +266,15 @@ VALUES (
 );
 
 
+-- =========================================================
 -- 6. BANGALORE TRANSIT CORRIDORS (Airport & Tech Hubs)
+-- =========================================================
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES (
-  'b28c8eae-1ce4-47c4-936d-4e0508505009',
+  'b28c8eae-1ce4-47c4-936d-4e0508505039',
   'RAILWAY_GATE',
   'CLOSED',
-  ST_GeomFromText('POINT(77.5900 13.0400)', 4326), -- Hebbal crossing approach
+  ST_GeomFromText('POINT(77.5900 13.0400)', 4326),
   'Hebbal level crossing gate (Maintenance Closures)',
   TRUE,
   NOW(),
@@ -154,8 +283,8 @@ VALUES (
 
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES (
-  'c38d8eae-2ce4-47c4-936d-4e0508505010',
-  ST_GeomFromText('POINT(77.7000 12.9900)', 4326), -- KR Puram ORR junction pothole
+  'c38d8eae-2ce4-47c4-936d-4e0508505040',
+  ST_GeomFromText('POINT(77.7000 12.9900)', 4326),
   NULL,
   'MEDIUM',
   'VERIFIED',
@@ -163,13 +292,15 @@ VALUES (
 );
 
 
+-- =========================================================
 -- 7. HYDERABAD LOCAL PATHWAYS (Gachibowli to Secunderabad)
+-- =========================================================
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES (
-  'b28c8eae-1ce4-47c4-936d-4e0508505011',
+  'b28c8eae-1ce4-47c4-936d-4e0508505041',
   'WATER_LOGGING',
   'CLOSED',
-  ST_GeomFromText('POINT(78.4600 17.4400)', 4326), -- Begumpet underpass
+  ST_GeomFromText('POINT(78.4600 17.4400)', 4326),
   'Begumpet Underpass Waterlogging (Heavy Rain accumulation)',
   TRUE,
   NOW(),
@@ -178,8 +309,8 @@ VALUES (
 
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES (
-  'c38d8eae-2ce4-47c4-936d-4e0508505012',
-  ST_GeomFromText('POINT(78.3800 17.4400)', 4326), -- Madhapur Image Towers road
+  'c38d8eae-2ce4-47c4-936d-4e0508505042',
+  ST_GeomFromText('POINT(78.3800 17.4400)', 4326),
   NULL,
   'HIGH',
   'VERIFIED',
@@ -187,13 +318,15 @@ VALUES (
 );
 
 
+-- =========================================================
 -- 8. LUCKNOW CITY TRANSIT (Charbagh to Airport)
+-- =========================================================
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES (
-  'b28c8eae-1ce4-47c4-936d-4e0508505013',
+  'b28c8eae-1ce4-47c4-936d-4e0508505043',
   'RAILWAY_GATE',
   'CLOSED',
-  ST_GeomFromText('POINT(80.9600 26.8700)', 4326), -- Nishatganj approach
+  ST_GeomFromText('POINT(80.9600 26.8700)', 4326),
   'Nishatganj Level Crossing Gate (Closed)',
   TRUE,
   NOW(),
@@ -202,8 +335,8 @@ VALUES (
 
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES (
-  'c38d8eae-2ce4-47c4-936d-4e0508505014',
-  ST_GeomFromText('POINT(80.9200 26.8300)', 4326), -- Charbagh bypass junction pothole
+  'c38d8eae-2ce4-47c4-936d-4e0508505044',
+  ST_GeomFromText('POINT(80.9200 26.8300)', 4326),
   NULL,
   'HIGH',
   'VERIFIED',
@@ -211,10 +344,12 @@ VALUES (
 );
 
 
+-- =========================================================
 -- 9. JAIPUR HERITAGE ROADWAYS (Amer Fort approach)
+-- =========================================================
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES (
-  'b28c8eae-1ce4-47c4-936d-4e0508505015',
+  'b28c8eae-1ce4-47c4-936d-4e0508505045',
   'RAILWAY_GATE',
   'CLOSED',
   ST_GeomFromText('POINT(75.8600 26.9700)', 4326),
@@ -226,8 +361,8 @@ VALUES (
 
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES (
-  'c38d8eae-2ce4-47c4-936d-4e0508505016',
-  ST_GeomFromText('POINT(75.8500 26.9600)', 4326), -- Jal Mahal approach pothole
+  'c38d8eae-2ce4-47c4-936d-4e0508505046',
+  ST_GeomFromText('POINT(75.8500 26.9600)', 4326),
   NULL,
   'HIGH',
   'VERIFIED',
@@ -235,10 +370,12 @@ VALUES (
 );
 
 
+-- =========================================================
 -- 10. KOLKATA HUB CORRIDORS (Howrah to Salt Lake)
+-- =========================================================
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES (
-  'b28c8eae-1ce4-47c4-936d-4e0508505017',
+  'b28c8eae-1ce4-47c4-936d-4e0508505047',
   'RAILWAY_GATE',
   'CLOSED',
   ST_GeomFromText('POINT(88.4000 22.6200)', 4326),
@@ -250,8 +387,8 @@ VALUES (
 
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES (
-  'c38d8eae-2ce4-47c4-936d-4e0508505018',
-  ST_GeomFromText('POINT(88.4300 22.5700)', 4326), -- Salt Lake Sec-V tech hub pothole
+  'c38d8eae-2ce4-47c4-936d-4e0508505048',
+  ST_GeomFromText('POINT(88.4300 22.5700)', 4326),
   NULL,
   'MEDIUM',
   'VERIFIED',
@@ -259,10 +396,12 @@ VALUES (
 );
 
 
+-- =========================================================
 -- 11. CHENNAI CITY ROUTES (OMR Tech Corridor)
+-- =========================================================
 INSERT INTO alerts (id, alert_type, status, coordinate, description, is_active, created_at, updated_at)
 VALUES (
-  'b28c8eae-1ce4-47c4-936d-4e0508505019',
+  'b28c8eae-1ce4-47c4-936d-4e0508505049',
   'RAILWAY_GATE',
   'CLOSED',
   ST_GeomFromText('POINT(80.2300 13.0600)', 4326),
@@ -274,11 +413,10 @@ VALUES (
 
 INSERT INTO potholes (id, coordinate, image_url, severity, ai_status, detected_at)
 VALUES (
-  'c38d8eae-2ce4-47c4-936d-4e0508505020',
-  ST_GeomFromText('POINT(80.2200 13.0100)', 4326), -- Guindy Industrial Estate road pothole
+  'c38d8eae-2ce4-47c4-936d-4e0508505050',
+  ST_GeomFromText('POINT(80.2200 13.0100)', 4326),
   NULL,
   'HIGH',
   'VERIFIED',
   NOW()
 );
-

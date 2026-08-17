@@ -45,6 +45,12 @@ public class AuthService {
             timestamps.add(now);
         }
 
+        String username = request.getUsername() != null ? request.getUsername().toLowerCase().trim() : "";
+        if (!username.matches("^[a-z0-9_-]{3,20}$")) {
+            throw new RuntimeException("Username must be 3-20 characters long and contain only lowercase letters, numbers, underscores (_), or hyphens (-). No spaces allowed.");
+        }
+        request.setUsername(username);
+
         String normalizedEmail = request.getEmail().toLowerCase().trim();
         if (isDisposableEmail(normalizedEmail)) {
             throw new RuntimeException("Temporary/Disposable email addresses are not allowed.");
