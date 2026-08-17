@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(exclude = {UserDetailsServiceAutoConfiguration.class})
 @EnableAsync
-@EnableScheduling // Enables the scheduled gate auto-reopen tasks
+@EnableScheduling
 public class RoadassistantApplication {
 
 	public static void main(String[] args) {

@@ -21,10 +21,19 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private jakarta.servlet.http.HttpServletRequest httpServletRequest;
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody AuthRequest request) {
         try {
-            User user = authService.registerUser(request);
+            String clientIp = httpServletRequest.getRemoteAddr();
+            String xForwardedFor = httpServletRequest.getHeader("X-Forwarded-For");
+            if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+                clientIp = xForwardedFor.split(",")[0].trim();
+            }
+            
+            User user = authService.registerUser(request, clientIp);
             String token = jwtUtils.generateToken(user.getUsername(), user.getId(), user.getRole());
             return new ResponseEntity<>(Map.of("user", user, "token", token), HttpStatus.CREATED);
         } catch (Exception e) {

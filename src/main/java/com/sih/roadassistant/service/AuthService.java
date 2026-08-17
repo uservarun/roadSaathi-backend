@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class AuthService {
@@ -28,8 +32,19 @@ public class AuthService {
             "sharklasers.com", "guerrillamail.com", "dispostable.com", "mailinator.com"
     );
     private final SecureRandom secureRandom = new SecureRandom();
+    private final Map<String, List<Instant>> signupIpTracker = new ConcurrentHashMap<>();
 
-    public User registerUser(AuthRequest request) {
+    public User registerUser(AuthRequest request, String clientIp) {
+        if (clientIp != null) {
+            Instant now = Instant.now();
+            List<Instant> timestamps = signupIpTracker.computeIfAbsent(clientIp, k -> new java.util.ArrayList<>());
+            timestamps.removeIf(time -> java.time.Duration.between(time, now).toMinutes() >= 10);
+            if (timestamps.size() >= 3) {
+                throw new RuntimeException("Too many signup requests from this IP. Please try again in 10 minutes.");
+            }
+            timestamps.add(now);
+        }
+
         String normalizedEmail = request.getEmail().toLowerCase().trim();
         if (isDisposableEmail(normalizedEmail)) {
             throw new RuntimeException("Temporary/Disposable email addresses are not allowed.");
