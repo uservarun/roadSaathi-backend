@@ -72,6 +72,10 @@ public class IssueService {
                 .build();
         reportRepository.save(report);
 
+        // Award +50 points for reporting pothole
+        user.setRewardPoints(user.getRewardPoints() + 50);
+        userRepository.save(user);
+
         if (imageBytes != null && imageBytes.length > 0 && !geminiApiKey.isEmpty()) {
             verifyPotholeWithAI(savedPothole.getId(), imageBytes);
         }
@@ -108,6 +112,11 @@ public class IssueService {
             gateAlert.setUpdatedAt(LocalDateTime.now());
 
             userReportCooldowns.put(userId, Instant.now());
+            
+            // Award +30 points for gate report
+            user.setRewardPoints(user.getRewardPoints() + 30);
+            userRepository.save(user);
+
             return alertRepository.save(gateAlert);
         } else {
             // Create a new railway gate alert if none exists nearby
@@ -121,6 +130,11 @@ public class IssueService {
                     .build();
 
             userReportCooldowns.put(userId, Instant.now());
+            
+            // Award +30 points for gate report
+            user.setRewardPoints(user.getRewardPoints() + 30);
+            userRepository.save(user);
+
             return alertRepository.save(newGate);
         }
     }

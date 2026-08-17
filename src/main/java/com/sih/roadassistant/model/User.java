@@ -53,4 +53,8 @@ public class User {
 
     @Column(name = "reset_code_expires_at")
     private LocalDateTime resetCodeExpiresAt;
+
+    @Column(name = "reward_points", nullable = false)
+    @Builder.Default
+    private int rewardPoints = 0;
 }
