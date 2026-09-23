@@ -9,7 +9,19 @@ import java.util.Base64;
 @Converter
 public class EncryptionConverter implements AttributeConverter<String, String> {
     private static final String ALGORITHM = "AES";
-    private static final byte[] KEY = "REMOVED_SECRET".getBytes(); // 16-byte key for AES-128
+    private static byte[] getSecretKey() {
+        String secret = System.getenv("DB_ENCRYPTION_KEY");
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException("DB_ENCRYPTION_KEY environment variable is missing!");
+        }
+        byte[] keyBytes = secret.getBytes();
+        if (keyBytes.length != 16) {
+            byte[] padded = new byte[16];
+            System.arraycopy(keyBytes, 0, padded, 0, Math.min(keyBytes.length, 16));
+            return padded;
+        }
+        return keyBytes;
+    }
 
     @Override
     public String convertToDatabaseColumn(String attribute) {
@@ -17,7 +29,7 @@ public class EncryptionConverter implements AttributeConverter<String, String> {
             return null;
         }
         try {
-            SecretKeySpec keySpec = new SecretKeySpec(KEY, ALGORITHM);
+            SecretKeySpec keySpec = new SecretKeySpec(getSecretKey(), ALGORITHM);
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec); // Initialize cipher for encryption
             byte[] encryptedBytes = cipher.doFinal(attribute.getBytes());
@@ -33,7 +45,7 @@ public class EncryptionConverter implements AttributeConverter<String, String> {
             return null;
         }
         try {
-            SecretKeySpec keySpec = new SecretKeySpec(KEY, ALGORITHM);
+            SecretKeySpec keySpec = new SecretKeySpec(getSecretKey(), ALGORITHM);
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, keySpec); // Initialize cipher for decryption
             byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(dbData));
