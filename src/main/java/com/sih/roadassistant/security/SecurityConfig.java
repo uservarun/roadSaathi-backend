@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; script-src 'self'"))
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/routing/**", "/api/v1/issues/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/api/v1/routing/**", "/api/v1/issues/**", "/api/v1/health/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
